@@ -13,10 +13,10 @@ namespace DungeonCrawler
     }
     class Globals
     {
-        public const int GAMEFRAME_X = 5,
+        public const int GAMEFRAME_X = 5, //X and Y coordinates for the game
                          GAMEFRAME_Y = 0,
-                         TILESIZE_HEIGHT = 1,
-                         TILESIZE_WIDTH = 2;
+                         TILESIZE_HEIGHT = 1, //Tile size
+                         TILESIZE_WIDTH = 2; // a width of 2 to make the tiles square. 
 
         /// <summary>ClearLine clears a row in the console.
         /// <para>Usage: ClearLine(5)</para>
@@ -47,7 +47,6 @@ namespace DungeonCrawler
                 Unlocked = ConsoleColor.Green,
                 NotVisible_locked = ConsoleColor.DarkBlue,
                 NotVisible_Unlocked = ConsoleColor.DarkGreen
-
             };
         }
         public static ColorScheme Yellow()

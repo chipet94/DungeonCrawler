@@ -6,7 +6,6 @@ namespace DungeonCrawler
     {
         static void Main(string[] args)
         {
-
             Engine engine = new Engine();
             engine.GameLoop();
         }

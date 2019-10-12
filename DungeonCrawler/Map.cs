@@ -43,10 +43,8 @@ namespace DungeonCrawler
             for (int x = 0; x < mapHeight; x++)
             {
                 for (int y = 0; y < mapWidth; y++)
-                {
-                 
+                {          
                     dataOut[x, y] = Tile.GetTileFromInt(dataIn[x * mapWidth + y], new Point(x, y));
-
                 }
             }
             return dataOut;
@@ -86,13 +84,11 @@ namespace DungeonCrawler
                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
                 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-
                 Load();          
             }
             public override void LoadObjects()
             {
-                // instead of giving special tiles ids and placing them on the map, i desided to place them manually to have more controll over them. 
-
+                // instead of giving special tiles ids and placing them on the map, i desided to place them manually to have more controll over them.
                 //All keys, doors, traps and portals. 
                 _Tiles[2, 18].ContainedTileObject = new Tile.Portal(_Tiles[2, 18].Location, new Point(6, 3));
 

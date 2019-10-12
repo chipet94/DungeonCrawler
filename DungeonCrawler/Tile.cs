@@ -4,8 +4,6 @@ using System.Text;
 
 namespace DungeonCrawler
 {
-
-
     abstract class Tile : GameObject
     {
         public enum State
@@ -22,8 +20,7 @@ namespace DungeonCrawler
             Key,
             Trap,
             Portal,
-            Goal
-            
+            Goal          
         }
         string _Text;
         State _State;
@@ -32,7 +29,6 @@ namespace DungeonCrawler
         ConsoleColor _TextColor;
         ColorScheme _ColorScheme;
         Tile _ContainedTile;
-
         bool _Changed;
         public Tile ContainedTileObject { get => _ContainedTile; set => _ContainedTile = value; }
         public bool HasChanged { get => _Changed; set => _Changed = value; }
@@ -43,7 +39,6 @@ namespace DungeonCrawler
             Location = location;
             _Changed = true;
         }
-
         public virtual void Draw()
         {
             if (_ContainedTile != null)
@@ -60,7 +55,6 @@ namespace DungeonCrawler
                 _Changed = false;
             }
         }
-
         public void UpdateState(State newState)
         {
             _State = newState;
@@ -136,7 +130,6 @@ namespace DungeonCrawler
                     _Color = _ColorScheme.Hidden;
                     _TextColor = ConsoleColor.Black;
                 }
-
                 base.Draw();
             }
         }
@@ -158,7 +151,6 @@ namespace DungeonCrawler
                 _DoorState = DoorState.Locked;
                 _State = State.Hidden;
                 _Text = "||";
-
             }
             public override void Draw()
             {
@@ -190,7 +182,6 @@ namespace DungeonCrawler
                 {
                     _Color = _ColorScheme.Hidden;
                 }
-
                 base.Draw();
             }
             public bool CheckIfPlayerHasKey(Player player)
@@ -207,7 +198,6 @@ namespace DungeonCrawler
                 return false;
             }
         }
-
         public class Key : Tile, IKey
         {
             private string _Name;
@@ -221,11 +211,8 @@ namespace DungeonCrawler
                 _Name = name;
                 _ID = id;
             }
-
             public int ID { get => _ID; set => _ID = value; }
-
             public string Name => _Name;
-
             public override void Draw()
             {
                 if (_State == State.Visible)
@@ -251,7 +238,6 @@ namespace DungeonCrawler
                 _ColorScheme = ColorScheme.White();
                 _Type = TileType.Trap;
                 _State = State.Hidden;
-
             }
             public override void Draw()
             {
@@ -287,7 +273,6 @@ namespace DungeonCrawler
                 _ColorScheme = ColorScheme.Yellow();
                 _Type = TileType.Portal;
                 _State = State.Hidden;
-
             }
             public override void Draw()
             {
@@ -321,7 +306,6 @@ namespace DungeonCrawler
                 _ColorScheme = ColorScheme.White();
                 _Type = TileType.Goal;
                 _State = State.Hidden;
-
             }
             public override void Draw()
             {
@@ -343,8 +327,5 @@ namespace DungeonCrawler
                 base.Draw();
             }
         }
-
     }
-
-
 }

@@ -16,19 +16,15 @@ namespace DungeonCrawler
             _SelectedMap = Maps[0];
             _Player = new Player(_SelectedMap.SpawnPoint);
         }
-        
         public void GameLoop()
         {
             _Playing = true;
             _SelectedMap.Refresh();
             while (_Playing)
-            {
-                
+            {  
                 _Player.CheckTiles(_SelectedMap);
                 _SelectedMap.Refresh();
                 _Player.Draw();
-
-
                 GetInput();
             }
         }
@@ -84,7 +80,6 @@ namespace DungeonCrawler
         }
         bool CanMove(int mapX, int mapY)
         {
-
             if (_SelectedMap.Tiles[mapX, mapY].Type != Tile.TileType.Wall)
             {
                 if (_SelectedMap.Tiles[mapX, mapY].ContainedTileObject != null && _SelectedMap.Tiles[mapX, mapY].ContainedTileObject.Type != Tile.TileType.Door)
@@ -136,13 +131,6 @@ namespace DungeonCrawler
                     default:
                         break;
                 }
-            }
-        }
-        public void CheckPath()
-        {
-            if (true)
-            {
-
             }
         }
     }
