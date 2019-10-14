@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DungeonCrawler
 {
@@ -8,14 +7,15 @@ namespace DungeonCrawler
     {
         private ConsoleColor _Color = ConsoleColor.Yellow;
         private string _Text = "PL";
-        private int _Moves;
+        private int _Steps;
         private List<Tile.Key> _Keys;
         public Player(Point SpawnPoint)
         {
-            _Moves = 0;
+            _Steps = 0;
             _Keys = new List<Tile.Key>();
             Location = SpawnPoint;
         }
+        public int Steps { get => _Steps; }
         public List<Tile.Key> keys { get => _Keys; }
         /// <summary>
         /// Adds key to keyring
@@ -33,7 +33,7 @@ namespace DungeonCrawler
         }
         public void StepOnTrap()
         {
-            _Moves += 10;
+            _Steps += 10;
         }
         /// <summary>
         /// Prints info about player.
@@ -46,7 +46,7 @@ namespace DungeonCrawler
 
             Globals.ClearLine(1);
             Console.SetCursorPosition(0, 1);
-            Console.Write("Steps: " + _Moves);
+            Console.Write("Steps: " + _Steps);
 
             Globals.ClearLine(2);
             Console.SetCursorPosition(0, 2);
@@ -90,7 +90,7 @@ namespace DungeonCrawler
                 default:
                     break;
             }
-            _Moves++;
+            _Steps++;
         }
         /// <summary>
         ///sets all visible tiles to not visible and sets all tiles around the player to visible. 
@@ -102,9 +102,9 @@ namespace DungeonCrawler
             {
                 for (int y = 0; y < map.Width; y++)
                 {
-                    if (map.Tiles[x,y].CurrentState == Tile.State.Visible)
+                    if (map.Tiles[x,y].CurrentState == State.Visible)
                     {
-                        map.Tiles[x, y].UpdateState(Tile.State.NotVisible);
+                        map.Tiles[x, y].UpdateState(State.NotVisible);
                     }
                 }
             }
@@ -118,9 +118,9 @@ namespace DungeonCrawler
                     {
                         if (x < map.Height && y < map.Width)
                         {
-                            if (tileArray[x,y].CurrentState == Tile.State.Hidden || tileArray[x, y].CurrentState == Tile.State.NotVisible)
+                            if (tileArray[x,y].CurrentState == State.Hidden || tileArray[x, y].CurrentState == State.NotVisible)
                             {
-                                tileArray[x, y].UpdateState(Tile.State.Visible);
+                                tileArray[x, y].UpdateState(State.Visible);
                             }
                         }
                     }

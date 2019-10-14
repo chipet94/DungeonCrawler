@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace DungeonCrawler
+﻿namespace DungeonCrawler
 {
     abstract class Map
     {
@@ -11,9 +7,7 @@ namespace DungeonCrawler
         private Point _SpawnPoint;
         private int[] _MapData;
         private Tile[,] _Tiles;
-        public Map()
-        {
-        }
+
         public Tile[,] Tiles { get => _Tiles; }
         public Point SpawnPoint { get => _SpawnPoint; }
         public int[] GetMapData { get => _MapData; }
@@ -55,6 +49,8 @@ namespace DungeonCrawler
             LoadObjects();
         }
         public abstract void LoadObjects();
+
+        //The game map. You can use this as a template for making new maps. 
         public class Simple : Map
         {              
             public Simple()

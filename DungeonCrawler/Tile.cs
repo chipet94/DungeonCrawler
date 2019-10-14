@@ -1,28 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DungeonCrawler
 {
-    abstract class Tile : GameObject
+    abstract class Tile : GameObject, ITile
     {
-        public enum State
-        {
-            Visible,
-            NotVisible,
-            Hidden
-        }
-        public enum TileType
-        {
-            Floor,
-            Wall,
-            Door,
-            Key,
-            Trap,
-            Portal,
-            Goal          
-        }
-        string _Text;
+        string _Text; // this is the "symbols" used for a tile. to make it display properly do not make the string longer than Globals.TILESIZE_WIDTH.
         State _State;
         TileType _Type;
         ConsoleColor _Color;
@@ -30,10 +12,12 @@ namespace DungeonCrawler
         ColorScheme _ColorScheme;
         Tile _ContainedTile;
         bool _Changed;
+
         public Tile ContainedTileObject { get => _ContainedTile; set => _ContainedTile = value; }
         public bool HasChanged { get => _Changed; set => _Changed = value; }
         public State CurrentState { get => _State; }
         public TileType Type { get => _Type; }
+
         public Tile(Point location)
         {
             Location = location;
@@ -80,6 +64,19 @@ namespace DungeonCrawler
                     throw new Exception("Invalid Tile ID");
             }
         }
+
+        public bool Equals(TileType type)
+        {
+            if (this.Type == type)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         class Wall : Tile
         {
             public Wall(Point location) : base(location)
@@ -103,6 +100,7 @@ namespace DungeonCrawler
                 base.Draw();
             }
         }
+
         class Floor : Tile
         {
             public Floor(Point location) : base(location)
@@ -133,6 +131,7 @@ namespace DungeonCrawler
                 base.Draw();
             }
         }
+
         public class Door : Tile
         {
             private int KeyID;

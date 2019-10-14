@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DungeonCrawler
 {
-    enum Direction
-    {
-        Up,
-        Down,
-        Left,
-        Right
-    }
     class Globals
     {
         public const int GAMEFRAME_X = 5, //X and Y coordinates for the game
