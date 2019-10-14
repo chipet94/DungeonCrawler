@@ -12,7 +12,7 @@ namespace DungeonCrawler
         {
             MainMenuState();
         }
-        public void GameLoop()
+        private void GameLoop()
         {
             Console.Clear();
             InitGame();
@@ -74,7 +74,6 @@ namespace DungeonCrawler
             }
             if (move)
             {
-                _SelectedMap.Tiles[_Player.Location_X, _Player.Location_Y].HasChanged = true;
                 _Player.Move(direction);
                 _Player.CheckTiles(_SelectedMap);
                 CheckTile();
