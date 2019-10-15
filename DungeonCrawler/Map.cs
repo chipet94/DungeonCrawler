@@ -1,16 +1,20 @@
-﻿namespace DungeonCrawler
+﻿using System.Collections.Generic;
+
+namespace DungeonCrawler
 {
     abstract class Map
     {
         private int _Height;
         private int _Width;
         private Point _SpawnPoint;
-        private int[] _MapData;
+        private char[,] _MapData;
         private Tile[,] _Tiles;
+        private List<Tile> _ObjectTiles;
 
         public Tile[,] Tiles { get => _Tiles; }
         public Point SpawnPoint { get => _SpawnPoint; }
-        public int[] GetMapData { get => _MapData; }
+        public char[,] GetMapData { get => _MapData; }
+        public List<Tile> GameObjects { get => _ObjectTiles; }
         public int Height { get => _Height; }
         public int Width { get => _Width; }
         /// <summary>
@@ -29,16 +33,24 @@
                     }     
                 }
             }
+            //Objects after to make sure they're above. 
+            for (int i = 0; i < _ObjectTiles.Count; i++)
+            {
+                if (_ObjectTiles[i].HasChanged)
+                {
+                    _ObjectTiles[i].Draw();
+                }
+            }
         }
-        // Creates a 2d tile array from a 1d int array. used to make maps. 
-        public static Tile[,] MakeTiles<T>(int[] dataIn, int mapHeight, int mapWidth)
+        //Translates char[,] to Tile[,]
+        public static Tile[,] MakeTiles<T>(char[,] dataIn, int mapHeight, int mapWidth)
         {
             Tile[,] dataOut = new Tile[mapHeight, mapWidth];
             for (int x = 0; x < mapHeight; x++)
             {
                 for (int y = 0; y < mapWidth; y++)
                 {          
-                    dataOut[x, y] = Tile.GetTileFromInt(dataIn[x * mapWidth + y], new Point(x, y));
+                    dataOut[x, y] = Tile.GetTileFromChar(dataIn[x,y], new Point(x, y));
                 }
             }
             return dataOut;
@@ -52,57 +64,62 @@
 
         //The game map. You can use this as a template for making new maps. 
         public class Simple : Map
-        {              
+        {
             public Simple()
             {
                 _Height = 20;
                 _Width = 20;
                 _SpawnPoint = new Point(1, 1);
-                _MapData = new int[]
+                _MapData = new char[,]
                 {
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-                0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-                Load();          
+                    { '#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#', },
+                    { '#','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','#','.','.','#', },
+                    { '#','.','.','.','.','.','.','#','#','.','.','.','.','.','.','.','#','.','.','#', },
+                    { '#','.','.','.','.','.','.','#','.','.','.','.','.','.','#','.','#','.','.','#', },
+                    { '#','#','#','#','#','#','#','#','#','#','#','#','.','.','#','.','#','#','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','.','.','#','.','.','.','.','#', },
+                    { '.','.','.','.','.','.','#','.','.','.','.','.','.','.','#','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','.','.','#','.','.','.','.','#', },
+                    { '#','#','#','#','#','#','#','.','.','.','.','.','.','.','#','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','#','#','#','#','#','#','#','#','#','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','#','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','.','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','.','.','.','.','.','.','#','.','.','.','.','.','.','#', },
+                    { '#','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','.','#', },
+                    { '#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#', },
+                };
+                Load();        
+            
             }
             public override void LoadObjects()
             {
+                _ObjectTiles = new List<Tile>();
+
                 // instead of giving special tiles ids and placing them on the map, i desided to place them manually to have more controll over them.
                 //All keys, doors, traps and portals. 
-                _Tiles[2, 18].ContainedTileObject = new Tile.Portal(_Tiles[2, 18].Location, new Point(6, 3));
+                _ObjectTiles.Add(new Tile.Portal(new Point(2, 18), new Point(6, 3)));
 
-                _Tiles[9, 7].ContainedTileObject = new Tile.Door(Tiles[9, 7].Location, ColorScheme.Blue(), 10);
-                _Tiles[3, 8].ContainedTileObject = new Tile.Key(Tiles[3, 8].Location, 10, ColorScheme.Blue(), "Blue Key");
+                _ObjectTiles.Add(new Tile.Door(new Point(9,7), ColorScheme.Blue(), 10));
+                _ObjectTiles.Add(new Tile.Key(new Point(3, 8), 10, ColorScheme.Blue(), "Blue Key"));
 
-                _Tiles[18, 12].ContainedTileObject = new Tile.Door(Tiles[18, 12].Location, ColorScheme.Red(), 11);
-                _Tiles[14, 14].ContainedTileObject = new Tile.Key(Tiles[14, 14].Location, 11, ColorScheme.Red(), "Red Key");
+                _ObjectTiles.Add(new Tile.Door(new Point(18, 12), ColorScheme.Red(), 11));
+                _ObjectTiles.Add(new Tile.Key(new Point(14, 14), 11, ColorScheme.Red(), "Red Key"));
 
-                _Tiles[4, 18].ContainedTileObject = new Tile.Door(Tiles[4, 18].Location, ColorScheme.Yellow(), 12);
-                _Tiles[14, 5].ContainedTileObject = new Tile.Key(Tiles[14, 5].Location, 12, ColorScheme.Yellow(), "Golden Key");
+                //Can also use an existing tile location instead of creating a new point. 
+                _ObjectTiles.Add(new Tile.Door(Tiles[4, 18].Location, ColorScheme.Yellow(), 12));
+                _ObjectTiles.Add(new Tile.Key(Tiles[14, 5].Location, 12, ColorScheme.Yellow(), "Golden Key"));
 
-                _Tiles[3, 3].ContainedTileObject = new Tile.Trap(Tiles[3, 3].Location);
-                _Tiles[4, 12].ContainedTileObject = new Tile.Trap(Tiles[4, 12].Location);
-                _Tiles[14, 4].ContainedTileObject = new Tile.Trap(Tiles[14, 4].Location);
-                _Tiles[9, 18].ContainedTileObject = new Tile.Trap(Tiles[9, 18].Location);
+                _ObjectTiles.Add(new Tile.Trap(Tiles[3, 3].Location));
+                _ObjectTiles.Add(new Tile.Trap(Tiles[4, 12].Location));
+                _ObjectTiles.Add(new Tile.Trap(Tiles[14, 4].Location));
+                _ObjectTiles.Add(new Tile.Trap(Tiles[9, 18].Location));
 
-                _Tiles[6, 0].ContainedTileObject = new Tile.Goal(_Tiles[6, 0].Location);
+                _ObjectTiles.Add(new Tile.Goal(_Tiles[6, 0].Location));
             }
         }
     }

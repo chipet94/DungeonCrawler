@@ -10,10 +10,8 @@ namespace DungeonCrawler
         ConsoleColor _Color;
         ConsoleColor _TextColor;
         ColorScheme _ColorScheme;
-        Tile _ContainedTile;
         bool _Changed;
 
-        public Tile ContainedTileObject { get => _ContainedTile; set => _ContainedTile = value; }
         public bool HasChanged { get => _Changed; set => _Changed = value; }
         public State CurrentState { get => _State; }
         public TileType Type { get => _Type; }
@@ -25,40 +23,29 @@ namespace DungeonCrawler
         }
         public virtual void Draw()
         {
-            if (_ContainedTile != null)
-            {
-                _ContainedTile.Draw();
-            }
-            else
-            {
                 Point.TranslateLocation(Location).SetCursor();
                 Console.ForegroundColor = _TextColor;
                 Console.BackgroundColor = _Color;
                 Console.Write(_Text);
                 Console.ResetColor();
                 _Changed = false;
-            }
+           
         }
         public void UpdateState(State newState)
         {
             _State = newState;
             _Changed = true;
-            if (ContainedTileObject != null)
-            {
-                ContainedTileObject._State = newState;
-                ContainedTileObject.HasChanged = true;
-            }
         }
         /// <summary>
-        /// Translates an int to a Tile.
+        /// Translates a char to a Tile.
         /// </summary>
-        public static Tile GetTileFromInt(int tileId, Point pos)
+        public static Tile GetTileFromChar(char tileId, Point pos)
         {
-            switch ((TileType)tileId)
+            switch (tileId)
             {
-                case TileType.Floor:
+                case '.':
                     return new Floor(pos);
-                case TileType.Wall:
+                case '#':
                     return new Wall(pos);
                 default:
                     throw new Exception("Invalid Tile ID");

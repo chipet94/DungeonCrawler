@@ -107,6 +107,14 @@ namespace DungeonCrawler
                         map.Tiles[x, y].UpdateState(State.NotVisible);
                     }
                 }
+                //objects
+                for (int i = 0; i < map.GameObjects.Count; i++)
+                {
+                    if (map.GameObjects[i].CurrentState == State.Visible)
+                    {
+                        map.GameObjects[i].UpdateState(State.NotVisible);
+                    }
+                }
             }
             // set all tiles around the player to visible. 
             var tileArray = map.Tiles;
@@ -116,11 +124,24 @@ namespace DungeonCrawler
                 {
                     if (x >= 0 && y >= 0)
                     {
+                        //Map tiles
                         if (x < map.Height && y < map.Width)
                         {
                             if (tileArray[x,y].CurrentState == State.Hidden || tileArray[x, y].CurrentState == State.NotVisible)
                             {
                                 tileArray[x, y].UpdateState(State.Visible);
+                            }
+                            //Objects
+                            for (int i = 0; i < map.GameObjects.Count; i++)
+                            {
+                                if (map.GameObjects[i].Location.Compare(x,y))
+                                {
+                                    if (map.GameObjects[i].CurrentState == State.Hidden || map.GameObjects[i].CurrentState == State.NotVisible)
+                                    {
+                                        map.GameObjects[i].UpdateState(State.Visible);
+                                    }
+                                }
+
                             }
                         }
                     }

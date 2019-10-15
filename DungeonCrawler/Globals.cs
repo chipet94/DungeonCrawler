@@ -109,6 +109,28 @@ namespace DungeonCrawler
         {
             Console.SetCursorPosition(Y, X);
         }
+        public bool Compare(Point point)
+        {
+            if (point.X == X && point.Y == Y)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        public bool Compare(int x, int y)
+        {
+            if (X == x && Y == y)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         /// <summary>
         /// Translates map coordinates to console coordinates.
         /// </summary>

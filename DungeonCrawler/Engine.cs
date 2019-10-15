@@ -75,7 +75,6 @@ namespace DungeonCrawler
             if (move)
             {
                 _Player.Move(direction);
-                _Player.CheckTiles(_SelectedMap);
                 CheckTile();
             }
         }
@@ -83,22 +82,26 @@ namespace DungeonCrawler
         {
             if (!_SelectedMap.Tiles[mapX, mapY].Equals(TileType.Wall))
             {
-                if (_SelectedMap.Tiles[mapX, mapY].ContainedTileObject != null && !_SelectedMap.Tiles[mapX, mapY].ContainedTileObject.Equals(TileType.Door))
+                for (int i = 0; i < _SelectedMap.GameObjects.Count; i++)
                 {
-                    return true;
-                }
-                else
-                {
-                    if (_SelectedMap.Tiles[mapX, mapY].ContainedTileObject != null && _SelectedMap.Tiles[mapX, mapY].ContainedTileObject.Equals(TileType.Door))
+                    var current = _SelectedMap.GameObjects[i];
+                    if (current.Location.Compare(mapX,mapY))
                     {
-                        Tile.Door door = (Tile.Door)_SelectedMap.Tiles[mapX, mapY].ContainedTileObject;
-                        if (door.GetDoorState == Tile.Door.DoorState.Locked)
+                        if (current.Equals(TileType.Door))
                         {
-                            return door.CheckIfPlayerHasKey(_Player);
+                            Tile.Door door = (Tile.Door)_SelectedMap.GameObjects[i];
+                            if (door.GetDoorState == Tile.Door.DoorState.Locked)
+                            {
+                                return door.CheckIfPlayerHasKey(_Player);
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
                     }
-                    return true;
-                }             
+                }
+                return true;
             }
             else
             {
@@ -107,31 +110,33 @@ namespace DungeonCrawler
         }
         private void CheckTile()
         {
-            var x = _Player.Location_X;
-            var y = _Player.Location_Y;
-            if (_SelectedMap.Tiles[x, y].ContainedTileObject != null)
+            for (int i = 0; i < _SelectedMap.GameObjects.Count; i++)
             {
-                switch (_SelectedMap.Tiles[x, y].ContainedTileObject.Type)
+                var current = _SelectedMap.GameObjects[i];
+                if (current.Location.Compare(_Player.Location))
                 {
-                    case TileType.Goal:
-                        _Playing = false;
-                        GamefinishState();
-                        return;
-                    case TileType.Trap:
-                        var trap = (Tile.Trap)_SelectedMap.Tiles[x, y].ContainedTileObject;
-                        trap.TriggerSound();
-                        _Player.StepOnTrap();
-                        break;
-                    case TileType.Portal:
-                        var portal = (Tile.Portal)_SelectedMap.Tiles[x, y].ContainedTileObject;
-                        portal.TeleportPlayer(_Player);
-                        break;
-                    case TileType.Key:
-                        _Player.PickupKey((Tile.Key)_SelectedMap.Tiles[x, y].ContainedTileObject);
-                        _SelectedMap.Tiles[x, y].ContainedTileObject = null;
-                        break;
-                    default:
-                        break;
+                    switch (current.Type)
+                    {
+                        case TileType.Goal:
+                            _Playing = false;
+                            GamefinishState();
+                            return;
+                        case TileType.Trap:
+                            var trap = (Tile.Trap)current;
+                            trap.TriggerSound();
+                            _Player.StepOnTrap();
+                            break;
+                        case TileType.Portal:
+                            var portal = (Tile.Portal)current;
+                            portal.TeleportPlayer(_Player);
+                            break;
+                        case TileType.Key:
+                            _Player.PickupKey((Tile.Key)current);
+                            _SelectedMap.GameObjects.RemoveAt(i);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
